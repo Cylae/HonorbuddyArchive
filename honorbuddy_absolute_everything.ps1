@@ -494,7 +494,7 @@ function Create-DualDatabase {
     # 1. Generate TXT Database
     $db = @"
 ==============================================================================
-        HONORBUDDY APEX MASTER INDEX
+        HONORBUDDY MASTER INDEX
         Asset-to-Client Compatibility Matrix
 ==============================================================================
 
@@ -540,7 +540,7 @@ ASSET INVENTORY:
 # ==================== SYSTEM INITIALIZATION ====================
 
 Write-Log "================================================================" "INFO"
-Write-Log "  APEX PREDATOR ARCHIVAL ENGINE INITIALIZED                     " "INFO"
+Write-Log "  ARCHIVAL ENGINE INITIALIZED                     " "INFO"
 Write-Log "  Operation: Complete grid assimilation of Honorbuddy network.  " "INFO"
 Write-Log "================================================================" "INFO"
 
