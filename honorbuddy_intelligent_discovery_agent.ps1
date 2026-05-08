@@ -162,7 +162,7 @@ function Invoke-SearchStrategy {
     $url = $searchUrls[$Strategy] -f [uri]::EscapeDataString($Query), $MaxUrlsPerSearch
 
     Write-Log "Searching [$Strategy]: $Query" "DEBUG"
-    $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds 30
+    $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds $TimeoutSeconds
 
     if (-not $response) { return @() }
 
@@ -326,7 +326,7 @@ function Start-CrawlPhase {
 
             Write-Log "Crawling [$($urlItem.Source)]: $url (Score: $($urlItem.Score))" "INFO"
 
-            $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds 20
+            $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds $TimeoutSeconds
             if (-not $response) { continue }
 
             $script:DiscoveredUrls[$url] = Get-Date
@@ -443,7 +443,7 @@ function Classify-AndDownload {
             $outputPath = Join-Path $dirs[$category] $filename
 
             if (-Not (Test-Path $outputPath)) {
-                $result = Invoke-WebRequestSafe -Uri $url -OutputPath $outputPath -Retries 1
+                $result = Invoke-WebRequestSafe -Uri $url -OutputPath $outputPath -Retries $MaxRetries
 
                 if (Test-Path $outputPath) {
                     $fileSize = (Get-Item $outputPath).Length / 1MB
