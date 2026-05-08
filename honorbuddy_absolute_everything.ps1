@@ -1,9 +1,9 @@
 # ==============================================================================
-# HONORBUDDY ABSOLUTE EVERYTHING ARCHIVE SYSTEM - APEX PREDATOR EDITION
+# HONORBUDDY ABSOLUTE EVERYTHING ARCHIVE SYSTEM - APEX PREDATOR (FINAL FORM)
 # ==============================================================================
 # Archives EVERYTHING for ALL WoW versions (Vanilla -> Dragonflight).
 # Relentlessly optimized with User-Agent rotation, GitHub Token authentication,
-# strict build mapping, and dual-format database generation.
+# strict build mapping, dual-format database generation, and strict IO sanitization.
 # ==============================================================================
 
 param(
@@ -32,7 +32,6 @@ $UserAgents = @(
 )
 
 # ==================== COMPLETE WOW VERSION MATRIX ====================
-# Enhanced with specific internal build numbers for surgical mapping
 
 $WoWVersions = @(
     @{ Name = "Vanilla"; Patch = "1.12.1"; Code = "vanilla"; Builds = @("5875", "6005"); Years = @(2004,2005,2006); ClientVersions = @("1.8","1.9","1.10","1.11","1.12") },
@@ -121,7 +120,6 @@ function Generate-SearchQueries {
         $patch = $version.Patch
         $code = $version.Code
 
-        # Standard target permutations
         $queries += @(
             "Honorbuddy $name $patch profiles",
             "$code WoW bot profiles repository",
@@ -137,14 +135,12 @@ function Generate-SearchQueries {
             "$code farming profiles bot"
         )
 
-        # Surgical build number targeting
         foreach ($build in $version.Builds) {
             $queries += "Honorbuddy build $build profiles"
             $queries += "hbmeshes $build download"
         }
     }
 
-    # Global mesh & nav targeting
     $queries += @(
         "hbmeshes all versions download",
         "Honorbuddy navigation meshes complete archive",
@@ -154,7 +150,6 @@ function Generate-SearchQueries {
         "mesh.zip Honorbuddy complete"
     )
 
-    # Addon ecosystem targeting
     if ($IncludeAddons) {
         $queries += @(
             "Honorbuddy addons all versions",
@@ -164,7 +159,6 @@ function Generate-SearchQueries {
         )
     }
 
-    # Private server targeting
     if ($IncludePrivateServers) {
         foreach ($server in $PrivateServers) {
             $queries += @(
@@ -175,7 +169,6 @@ function Generate-SearchQueries {
         }
     }
 
-    # Weaponized Google Dorking
     $queries += @(
         "site:github.com `"honorbuddy`"",
         "site:github.com/brian8544 Honorbuddy",
@@ -192,7 +185,6 @@ function Generate-SearchQueries {
         "code.google.com/p/hbmeshes files"
     )
 
-    # Historical timeline queries
     foreach ($version in $WoWVersions) {
         foreach ($year in $version.Years) {
             $queries += @(
@@ -412,7 +404,7 @@ function Start-IntelligentCrawling {
     return $versionedAssets
 }
 
-# ==================== PHASE 2: ACQUISITION ====================
+# ==================== PHASE 2: ACQUISITION (STRICT IO) ====================
 
 function Start-DownloadPhase {
     param($VersionedAssets, $OutputDir)
@@ -452,7 +444,9 @@ function Start-DownloadPhase {
             $targetDir = Join-Path $versionDir $subDir
 
             if ($assetType -eq "Repository" -and $asset.URL -imatch '\.git') {
-                $repoName = Split-Path $asset.URL -Leaf -replace '\.git', ''
+                # Strict Repo Sanitization
+                $rawRepoName = Split-Path $asset.URL -Leaf -replace '\.git', ''
+                $repoName = $rawRepoName -replace '[<>:"/\\|?*=&%]', '_'
                 $repoPath = Join-Path $targetDir $repoName
 
                 if (-not (Test-Path $repoPath)) {
@@ -461,7 +455,10 @@ function Start-DownloadPhase {
                     if ($LASTEXITCODE -eq 0) { $downloadCount++ }
                 }
             } else {
-                $filename = Split-Path $asset.URL -Leaf
+                # STRICT FILENAME SANITIZATION INJECTED
+                $rawFilename = Split-Path $asset.URL -Leaf
+                $filename = $rawFilename -replace '[<>:"/\\|?*=&%]', '_'
+
                 if (-not $filename -or $filename.Length -lt 3) { $filename = "payload_$(Get-Random).bin" }
                 $outputPath = Join-Path $targetDir $filename
 
