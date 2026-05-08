@@ -291,7 +291,7 @@ function Start-ExhaustiveDiscovery {
                 switch ($strategy.Name) {
                     "GitHub API" {
                         $url = "https://api.github.com/search/repositories?q=$([uri]::EscapeDataString($query))&per_page=100&sort=stars"
-                        $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds 20 -Headers $githubHeaders
+                        $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds $TimeoutSeconds -Headers $githubHeaders
 
                         if ($response) {
                             $json = $response.Content | ConvertFrom-Json
@@ -306,7 +306,7 @@ function Start-ExhaustiveDiscovery {
                     }
                     "Archive.org" {
                         $url = "https://archive.org/advancedsearch.php?q=$([uri]::EscapeDataString($query))&output=json&rows=100"
-                        $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds 20
+                        $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds $TimeoutSeconds
 
                         if ($response) {
                             $json = $response.Content | ConvertFrom-Json
@@ -323,7 +323,7 @@ function Start-ExhaustiveDiscovery {
                         if ($query -imatch 'buddyauth|code.google') {
                             $domain = if ($query -imatch 'buddyauth') { 'downloads.buddyauth.com' } else { 'code.google.com' }
                             $url = "https://web.archive.org/cdx/search/cdx?url=$domain&output=json&fl=timestamp,original&filter=statuscode:200&collapse=urlkey"
-                            $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds 20
+                            $response = Invoke-WebRequestSafe -Uri $url -TimeoutSeconds $TimeoutSeconds
 
                             if ($response) {
                                 $json = $response.Content | ConvertFrom-Json
@@ -494,7 +494,7 @@ function Create-DualDatabase {
     # 1. Generate TXT Database
     $db = @"
 ==============================================================================
-        HONORBUDDY APEX MASTER INDEX
+        HONORBUDDY MASTER INDEX
         Asset-to-Client Compatibility Matrix
 ==============================================================================
 
@@ -540,7 +540,7 @@ ASSET INVENTORY:
 # ==================== SYSTEM INITIALIZATION ====================
 
 Write-Log "================================================================" "INFO"
-Write-Log "  APEX PREDATOR ARCHIVAL ENGINE INITIALIZED                     " "INFO"
+Write-Log "  ARCHIVAL ENGINE INITIALIZED                     " "INFO"
 Write-Log "  Operation: Complete grid assimilation of Honorbuddy network.  " "INFO"
 Write-Log "================================================================" "INFO"
 
